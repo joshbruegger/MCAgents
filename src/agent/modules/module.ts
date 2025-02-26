@@ -6,13 +6,11 @@
  */
 
 import { assert } from "@std/assert/assert";
-import { AgentConfig } from "../utils/config.ts";
-import { AgentState } from "./agent_state.ts";
-import { CognitiveController, Decision } from "./cognitive_controller.ts";
+import { AgentConfig } from "../../utils/config.ts";
+import { AgentState } from "../agent_state.ts";
+import { CognitiveController, Decision } from "../cognitive_controller.ts";
 
 /**
- * Base class for all PIANO modules.
- *
  * This abstract class defines the common interface and functionality for all
  * modules in the PIANO architecture. All modules must inherit from this class
  * and implement the required methods.

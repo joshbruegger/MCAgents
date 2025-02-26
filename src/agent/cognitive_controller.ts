@@ -1,6 +1,6 @@
 import { AgentConfig } from "../utils/config.ts";
 import { AgentState } from "./agent_state.ts";
-import { Module } from "./module.ts";
+import { Module } from "./modules/module.ts";
 
 /**
  * Type for decision object
@@ -13,8 +13,6 @@ export type Decision = {
 };
 
 /**
- * Cognitive Controller for PIANO Architecture
- *
  * The Cognitive Controller acts as an information bottleneck in the PIANO architecture.
  * It receives information from all other modules, makes high-level decisions, and
  * broadcasts these decisions back to the modules.

@@ -1,13 +1,11 @@
 import { Bot } from "mineflayer";
 import { AgentConfig } from "../utils/config.ts";
+import { initializeBot } from "../utils/mc_bot.ts";
 import { AgentState, createAgentState } from "./agent_state.ts";
-import { initializeBot } from "./bot.ts";
 import { CognitiveController } from "./cognitive_controller.ts";
-import { Module } from "./module.ts";
+import { Module } from "./modules/module.ts";
 
 /**
- * Agent class
- *
  * This class implements the core PIANO architecture, which consists of multiple
  * concurrent modules with a central Cognitive Controller that acts as an information
  * bottleneck.

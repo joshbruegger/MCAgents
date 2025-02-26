@@ -4,7 +4,7 @@ import { plugin as collectblock } from "mineflayer-collectblock";
 import { pathfinder } from "mineflayer-pathfinder";
 import { plugin as pvp } from "mineflayer-pvp";
 import { mineflayer as mineflayerViewer } from "prismarine-viewer";
-import { AgentConfig } from "../utils/config.ts";
+import { AgentConfig } from "./config.ts";
 
 /** Initializes the mineflayer bot instance with plugins */
 export function initializeBot(config: AgentConfig) {

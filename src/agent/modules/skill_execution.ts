@@ -2,7 +2,7 @@ import * as path from "jsr:@std/path";
 import { AgentConfig } from "../../utils/config.ts";
 import { AgentState } from "../agent_state.ts";
 import { Decision } from "../cognitive_controller.ts";
-import { Module } from "../module.ts";
+import { Module } from "./module.ts";
 
 interface Skill {
   docstring: string;
@@ -11,8 +11,6 @@ interface Skill {
 }
 
 /**
- * Skill Execution Module
- *
  * This module is responsible for executing skills in the Minecraft environment.
  * It translates high-level decisions from the Cognitive Controller into
  * concrete actions that can be executed in Minecraft.
