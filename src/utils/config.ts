@@ -8,7 +8,7 @@ const configSchema = z.object({
   root_dir: z.string().default("output"),
   modules: z.object({
     cognitive_controller: z.object({
-      update_interval: z.number(),
+      update_interval: z.number().default(0.2),
       llm: z.object({
         model: z.string().default("gpt-4o"),
       }),
@@ -46,15 +46,70 @@ const configSchema = z.object({
 
 export type AgentConfig = z.infer<typeof configSchema>;
 
-const CONFIG_DIR = path.join(path.dirname(Deno.cwd()), "config");
-const DEFAULT_CONFIG_PATH = path.join(CONFIG_DIR, "default.yml");
+// Define a recursive DeepPartial type for nested objects
+export type DeepPartial<T> = T extends object ? {
+    [P in keyof T]?: DeepPartial<T[P]>;
+  }
+  : T;
 
-export async function getDefaultConfig() {
-  const config = await loadConfig({
-    schema: configSchema,
-    adapters: yamlAdapter({ path: DEFAULT_CONFIG_PATH }),
-  });
-  return config;
+/**
+ * AgentConfig Constructor that allows partial config
+ *
+ * @param config - Partial config
+ * @returns AgentConfig
+ */
+export function AgentConfig(config: DeepPartial<AgentConfig>): AgentConfig {
+  return deepMerge(getDefaultConfig(), config) as AgentConfig;
+}
+
+// const CONFIG_DIR = path.join(path.dirname(Deno.cwd()), "config");
+// const DEFAULT_CONFIG_PATH = path.join(CONFIG_DIR, "default.yml");
+
+function getDefaults<Schema extends z.AnyZodObject>(
+  schema: Schema,
+  // deno-lint-ignore no-explicit-any
+): Record<string, any> {
+  return Object.fromEntries(
+    Object.entries(schema.shape).map(([key, value]) => {
+      if (value instanceof z.ZodDefault) {
+        return [key, value._def.defaultValue()];
+      } else if (value instanceof z.ZodObject) {
+        // Recursively get defaults for nested objects
+        return [key, getDefaults(value)];
+      }
+      return [key, undefined];
+    }),
+  );
+}
+
+export function getDefaultConfig(): AgentConfig {
+  return getDefaults(configSchema) as AgentConfig;
+}
+
+/**
+ * Deep merge utility function for nested objects
+ */
+function deepMerge(
+  // deno-lint-ignore no-explicit-any
+  target: Record<string, any>,
+  // deno-lint-ignore no-explicit-any
+  source: Record<string, any>,
+  // deno-lint-ignore no-explicit-any
+): Record<string, any> {
+  const output = { ...target };
+
+  for (const key in source) {
+    if (
+      source[key] instanceof Object && key in target &&
+      target[key] instanceof Object
+    ) {
+      output[key] = deepMerge(target[key], source[key]);
+    } else {
+      output[key] = source[key];
+    }
+  }
+
+  return output;
 }
 
 export async function getConfig(config_path: string) {
