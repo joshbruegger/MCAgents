@@ -1,11 +1,17 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@std/assert@*": "1.0.11",
     "jsr:@std/assert@1": "1.0.11",
+    "jsr:@std/assert@^1.0.10": "1.0.11",
+    "jsr:@std/async@^1.0.9": "1.0.10",
+    "jsr:@std/data-structures@^1.0.6": "1.0.6",
     "jsr:@std/internal@^1.0.5": "1.0.5",
     "jsr:@std/path@*": "1.0.8",
+    "jsr:@std/testing@*": "1.0.9",
     "jsr:@std/yaml@^1.0.5": "1.0.5",
     "npm:@langchain/core@~0.3.40": "0.3.40_zod@3.24.2",
+    "npm:@types/node@*": "22.12.0",
     "npm:langchain@~0.3.19": "0.3.19_@langchain+core@0.3.40__zod@3.24.2_zod@3.24.2",
     "npm:mineflayer-armor-manager@^2.0.1": "2.0.1_mineflayer@4.26.0__minecraft-data@3.84.1__prismarine-registry@1.11.0",
     "npm:mineflayer-auto-eat@5": "5.0.0",
@@ -26,11 +32,25 @@
         "jsr:@std/internal"
       ]
     },
+    "@std/async@1.0.10": {
+      "integrity": "2ff1b1c7d33d1416159989b0f69e59ec7ee8cb58510df01e454def2108b3dbec"
+    },
+    "@std/data-structures@1.0.6": {
+      "integrity": "76a7fd8080c66604c0496220a791860492ab21a04a63a969c0b9a0609bbbb760"
+    },
     "@std/internal@1.0.5": {
       "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
     },
     "@std/path@1.0.8": {
       "integrity": "548fa456bb6a04d3c1a1e7477986b6cffbce95102d0bb447c67c4ee70e0364be"
+    },
+    "@std/testing@1.0.9": {
+      "integrity": "9bdd4ac07cb13e7594ac30e90f6ceef7254ac83a9aeaa089be0008f33aab5cd4",
+      "dependencies": [
+        "jsr:@std/assert@^1.0.10",
+        "jsr:@std/async",
+        "jsr:@std/data-structures"
+      ]
     },
     "@std/yaml@1.0.5": {
       "integrity": "71ba3d334305ee2149391931508b2c293a8490f94a337eef3a09cade1a2a2742"
