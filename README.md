@@ -11,7 +11,7 @@ It is inspired by the following:
 
 ## Architecture Overview
 
-The architecture consists of several modules running in parallel that work together to create an intelligent agent. These modules share a shared state and have access to the instance of a mineflayer bot, which is used to interact with the Minecraft world.
+The architecture consists of several modules running in parallel that work together to create an intelligent agent. These modules share a shared state and have access to the instance of a mineflayer bot, which is used to interact with the Minecraft world. See the [[architecture]] page for more details.
 
 ### Core Modules
 
