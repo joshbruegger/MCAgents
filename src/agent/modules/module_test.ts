@@ -44,7 +44,7 @@ const mockConfig: AgentConfig = AgentConfig({
 // Mock agent state using factory function
 const mockAgentState = createAgentState();
 
-Deno.test("Module", async (t) => {
+Deno.test("Base Module", async (t) => {
   // Setup spies for console methods
 
   configureTestLogger();
@@ -132,7 +132,7 @@ Deno.test("Module", async (t) => {
   });
 
   await t.step("module loop handles errors gracefully", async () => {
-    const time = new FakeTime();
+    using time = new FakeTime();
 
     const module = new TestModule(
       "skill_execution",
@@ -169,5 +169,51 @@ Deno.test("Module", async (t) => {
 
     await module.onDecision(testDecision);
     assert(module.lastDecision === testDecision);
+  });
+
+  await t.step("Concurrent modules can run", async () => {
+    const module1 = new TestModule(
+      "skill_execution",
+      mockConfig,
+      mockAgentState,
+    );
+
+    const mockConfig2: AgentConfig = AgentConfig({
+      modules: {
+        memory: {
+          update_interval: 200,
+        },
+      },
+    });
+
+    const module2 = new TestModule(
+      "memory",
+      mockConfig2,
+      mockAgentState,
+    );
+
+    const cognitiveController = {} as CognitiveController;
+    module1.registerCognitiveController(cognitiveController);
+    module2.registerCognitiveController(cognitiveController);
+
+    using time = new FakeTime();
+
+    module1.start();
+    module2.start();
+
+    // Advance time by update interval
+    await time.tickAsync(100);
+    await time.runMicrotasks();
+    assert(module1.updateCallCount as number === 1);
+
+    // Advance again
+    await time.tickAsync(100);
+    await time.runMicrotasks();
+    assert(module1.updateCallCount as number === 2);
+    assert(module2.updateCallCount as number === 1);
+
+    module1.stop();
+    module2.stop();
+    await time.runAllAsync();
   });
 });
