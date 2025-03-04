@@ -1,6 +1,7 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@logtape/logtape@0.9": "0.9.0",
     "jsr:@std/assert@*": "1.0.11",
     "jsr:@std/assert@1": "1.0.11",
     "jsr:@std/assert@^1.0.10": "1.0.11",
@@ -26,6 +27,9 @@
     "npm:zod@^3.24.2": "3.24.2"
   },
   "jsr": {
+    "@logtape/logtape@0.9.0": {
+      "integrity": "aacdeb0e040e5723021bef8b9b8c03ad7cffb5e2146a0024c30814930f6e7c89"
+    },
     "@std/assert@1.0.11": {
       "integrity": "2461ef3c368fe88bc60e186e7744a93112f16fd110022e113a0849e94d1c83c1",
       "dependencies": [
@@ -1622,6 +1626,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@logtape/logtape@0.9",
       "jsr:@std/assert@1",
       "jsr:@std/yaml@^1.0.5",
       "npm:@langchain/core@~0.3.40",
