@@ -8,31 +8,31 @@ const configSchema = z.object({
   root_dir: z.string().default("output"),
   modules: z.object({
     cognitive_controller: z.object({
-      update_interval: z.number().default(0.2),
+      update_interval: z.number().default(200),
       llm: z.object({
         model: z.string().default("gpt-4o"),
       }),
     }),
     memory: z.object({
-      update_interval: z.number().default(0.2),
+      update_interval: z.number().default(200),
       working_memory_size: z.number().default(10),
       short_term_memory_size: z.number().default(10),
       long_term_memory_size: z.number().default(10),
     }),
     action_awareness: z.object({
-      update_interval: z.number().default(0.2),
+      update_interval: z.number().default(200),
     }),
     goal_generation: z.object({
-      update_interval: z.number().default(0.2),
+      update_interval: z.number().default(200),
     }),
     social_awareness: z.object({
-      update_interval: z.number().default(0.2),
+      update_interval: z.number().default(200),
     }),
     talking: z.object({
-      update_interval: z.number().default(0.2),
+      update_interval: z.number().default(200),
     }),
     skill_execution: z.object({
-      update_interval: z.number().default(0.1),
+      update_interval: z.number().default(100),
     }),
   }),
   mc: z.object({

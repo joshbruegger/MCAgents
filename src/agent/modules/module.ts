@@ -5,10 +5,13 @@
  * It provides common functionality and interfaces for all modules.
  */
 
+import { getLogger } from "@logtape/logtape";
 import { assert } from "@std/assert/assert";
 import { AgentConfig } from "../../utils/config.ts";
 import { AgentState } from "../agent_state.ts";
 import { CognitiveController, Decision } from "../cognitive_controller.ts";
+
+const logger = getLogger(["MCAgents", "Module"]);
 
 /**
  * This abstract class defines the common interface and functionality for all
@@ -33,6 +36,7 @@ export abstract class Module {
   /** Promise that resolves when the module loop stops */
   private _stopPromise: Promise<void> | null = null;
   private _stopResolve: (() => void) | null = null;
+  private _intervalId: number | null = null;
 
   /**
    * Initialize the module.
@@ -55,12 +59,18 @@ export abstract class Module {
     );
     this._updateInterval =
       config.modules[this._name as keyof typeof config.modules].update_interval;
-
-    console.debug(`Initialized module: ${this._name}`);
   }
 
   public get name(): string {
     return this._name;
+  }
+
+  public get updateInterval(): number {
+    return this._updateInterval;
+  }
+
+  public get running(): boolean {
+    return this._running;
   }
 
   /**
@@ -72,7 +82,7 @@ export abstract class Module {
     cognitiveController: CognitiveController,
   ): void {
     this._cognitiveController = cognitiveController;
-    console.debug(
+    logger.debug(
       `Registered Cognitive Controller with module: ${this._name}`,
     );
   }
@@ -80,12 +90,14 @@ export abstract class Module {
   /** Start the module */
   public start(): void {
     if (this._running) {
-      console.warn(`Module ${this._name} is already running`);
+      logger.warn(
+        `Tried to start module ${this._name} but it is already running`,
+      );
       return;
     }
 
+    logger.debug(`Starting module: ${this._name}`);
     this._running = true;
-    console.debug(`Starting module: ${this._name}`);
 
     // Create a new stop promise
     this._stopPromise = new Promise<void>((resolve) => {
@@ -93,51 +105,41 @@ export abstract class Module {
     });
 
     // Start the module's main loop
-    this._moduleLoop();
+    this._intervalId = setInterval(
+      () => this._moduleLoop(),
+      this._updateInterval,
+    );
   }
 
   /** Stop the module and wait for the loop to complete */
   public async stop(): Promise<void> {
     if (!this._running) {
-      console.warn(`Module ${this._name} is not running`);
+      logger.warn(`Tried to stop module ${this._name} but it is not running`);
       return;
     }
 
-    console.debug(`Stopping module: ${this._name}`);
+    logger.debug(`Stopping module: ${this._name}...`);
+
     this._running = false;
+    await this._stopPromise;
 
-    // Wait for the module loop to complete
-    if (this._stopPromise) {
-      await this._stopPromise;
-      this._stopPromise = null;
-      this._stopResolve = null;
-    }
-
-    console.debug(`Stopped module: ${this._name}`);
+    logger.debug(`Module ${this._name} stopped`);
   }
 
-  /** Main loop for the module */
-  private async _moduleLoop(): Promise<void> {
-    console.debug(`Module loop started: ${this._name}`);
-
-    while (this._running) {
-      try {
-        // Run the module's update method
-        await this.update();
-
-        // Sleep for the update interval
-        await new Promise((resolve) =>
-          setTimeout(resolve, this._updateInterval * 1000)
-        );
-      } catch (e) {
-        console.error(`Error in module ${this._name}: ${e}`);
-        // Continue running despite errors
-      }
+  /** Main loop for the module. Called every updateInterval milliseconds */
+  private async _moduleLoop() {
+    if (!this._running) {
+      logger.debug(`Module ${this._name} loop stopped`);
+      clearInterval(this._intervalId!);
+      this._intervalId = null;
+      this._stopResolve!();
+      return;
     }
 
-    // Resolve the stop promise when the loop exits
-    if (this._stopResolve) {
-      this._stopResolve();
+    try {
+      await this.update();
+    } catch (e) {
+      logger.error(`Error in module ${this._name}: ${e}`);
     }
   }
 
