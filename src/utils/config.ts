@@ -58,8 +58,14 @@ export type DeepPartial<T> = T extends object ? {
  * @param config - Partial config
  * @returns AgentConfig
  */
-export function AgentConfig(config: DeepPartial<AgentConfig>): AgentConfig {
-  return deepMerge(getDefaultConfig(), config) as AgentConfig;
+export function AgentConfig(
+  config?: DeepPartial<AgentConfig>,
+): AgentConfig {
+  const defaultConfig = getDefaultConfig();
+  if (config) {
+    return deepMerge(defaultConfig, config) as AgentConfig;
+  }
+  return defaultConfig;
 }
 
 // const CONFIG_DIR = path.join(path.dirname(Deno.cwd()), "config");

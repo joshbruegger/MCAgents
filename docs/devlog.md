@@ -10,3 +10,4 @@
 - Refactored the code to use promises and the `setInterval` function to call the `update` method of each module.
 - Added LogTape for logging
 - Added tests for the `module.ts` file
+- Made getting the config easier with the `AgentConfig` function
