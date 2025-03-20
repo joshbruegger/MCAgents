@@ -1,9 +1,10 @@
 import { Bot } from "mineflayer";
-import { AgentConfig } from "../utils/config.ts";
-import { initializeBot } from "../utils/mc_bot.ts";
+import { initializeBot } from "../minecraft/mc_bot.ts";
 import { AgentState, createAgentState } from "./agent_state.ts";
 import { CognitiveController } from "./cognitive_controller.ts";
 import { Module } from "./modules/module.ts";
+import { SkillExecutionModule } from "./modules/skill_execution.ts";
+import { AgentConfig } from "./utils/config.ts";
 
 /**
  * This class implements the core PIANO architecture, which consists of multiple
@@ -51,12 +52,12 @@ export class Agent {
   /** Initializes all modules and connects them to the cognitive controller */
   private initializeModules() {
     this._modules = [
+      new SkillExecutionModule(this.config, this._agentState),
       // "memory": new MemoryModule(this.config),
       // "action_awareness": new ActionAwarenessModule(this.config),
       // "goal_generation": new GoalGenerationModule(this.config),
       // "social_awareness": new SocialAwarenessModule(this.config),
       // "talking": new TalkingModule(this.config),
-      // "skill_execution": new SkillExecutionModule(this.config),
     ];
 
     for (const module of this._modules) {
@@ -71,7 +72,7 @@ export class Agent {
       console.warn("Agent is already running");
       return;
     }
-    console.info(`Starting agent ${this._config.mc.username}`);
+    console.info(`Starting agent ${this._config.name}`);
 
     this._running = true;
 
@@ -88,7 +89,7 @@ export class Agent {
       module.start();
     }
 
-    console.info(`Agent ${this._config.mc.username} started`);
+    console.info(`Agent ${this._config.name} started`);
   }
 
   async stop() {
@@ -96,7 +97,7 @@ export class Agent {
       console.warn("Agent is not running");
       return;
     }
-    console.info(`Stopping agent ${this._config.mc.username}`);
+    console.info(`Stopping agent ${this._config.name}`);
 
     this._running = false;
 
@@ -113,6 +114,6 @@ export class Agent {
     console.info("Quitting bot");
     this._bot?.quit();
 
-    console.info(`Agent ${this._config.mc.username} stopped`);
+    console.info(`Agent ${this._config.name} stopped`);
   }
 }

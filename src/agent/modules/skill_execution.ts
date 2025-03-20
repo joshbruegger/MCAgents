@@ -1,7 +1,7 @@
 import * as path from "jsr:@std/path";
-import { AgentConfig } from "../../utils/config.ts";
 import { AgentState } from "../agent_state.ts";
 import { Decision } from "../cognitive_controller.ts";
+import { AgentConfig } from "../utils/config.ts";
 import { Module } from "./module.ts";
 
 interface Skill {

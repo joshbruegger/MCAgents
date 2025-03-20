@@ -1,6 +1,6 @@
-import { AgentConfig } from "../utils/config.ts";
 import { AgentState } from "./agent_state.ts";
 import { Module } from "./modules/module.ts";
+import { AgentConfig } from "./utils/config.ts";
 
 /**
  * Type for decision object

@@ -7,9 +7,9 @@
 
 import { getLogger } from "@logtape/logtape";
 import { assert } from "@std/assert/assert";
-import { AgentConfig } from "../../utils/config.ts";
 import { AgentState } from "../agent_state.ts";
 import { CognitiveController, Decision } from "../cognitive_controller.ts";
+import { AgentConfig } from "../utils/config.ts";
 
 const logger = getLogger(["MCAgents", "Module"]);
 

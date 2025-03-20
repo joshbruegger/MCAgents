@@ -6,6 +6,7 @@ import { yamlAdapter } from "zod-config/yaml-adapter";
 
 const configSchema = z.object({
   root_dir: z.string().default("output"),
+  name: z.string().default("MCAgent"),
   modules: z.object({
     cognitive_controller: z.object({
       update_interval: z.number().default(200),
@@ -34,13 +35,6 @@ const configSchema = z.object({
     skill_execution: z.object({
       update_interval: z.number().default(100),
     }),
-  }),
-  mc: z.object({
-    host: z.string().default("localhost"),
-    port: z.number().default(25565),
-    username: z.string().default("MCAgent"),
-    version: z.string().default("1.20.4"),
-    viewing_server_port: z.number().default(3000),
   }),
 });
 

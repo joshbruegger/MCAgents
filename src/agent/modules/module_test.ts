@@ -3,10 +3,10 @@ import { assertThrows } from "@std/assert/throws";
 import { assert } from "jsr:@std/assert/assert";
 import { assertSpyCalls, spy } from "jsr:@std/testing/mock";
 import { FakeTime } from "jsr:@std/testing/time";
-import { AgentConfig } from "../../utils/config.ts";
-import { configureTestLogger } from "../../utils/test_logger.ts";
+import { configureTestLogger } from "../../shared/test_logger.ts";
 import { createAgentState } from "../agent_state.ts";
 import { CognitiveController, Decision } from "../cognitive_controller.ts";
+import { AgentConfig } from "../utils/config.ts";
 import { Module } from "./module.ts";
 
 // Test implementation of the abstract Module class
