@@ -1,3 +1,4 @@
+import { getLogger } from "https://jsr.io/@logtape/logtape/0.9.0/logger.ts";
 import { AgentState } from "./agent_state.ts";
 import { Module } from "./modules/module.ts";
 import { AgentConfig } from "./utils/config.ts";
@@ -11,6 +12,8 @@ export type Decision = {
   reasoning: string;
   timestamp: number;
 };
+
+const logger = getLogger(["MCAgents", "CognitiveController"]);
 
 /**
  * The Cognitive Controller acts as an information bottleneck in the PIANO architecture.
@@ -26,6 +29,10 @@ export class CognitiveController {
   protected _updateInterval: number;
 
   protected _agentState: AgentState;
+
+  public get running(): boolean {
+    return this._running;
+  }
 
   /**
    * Initialize the Cognitive Controller.
@@ -55,7 +62,7 @@ export class CognitiveController {
       module.registerCognitiveController(this);
     });
 
-    console.debug(
+    logger.debug(
       `Registered ${modules.length} modules with Cognitive Controller`,
     );
   }
@@ -63,12 +70,12 @@ export class CognitiveController {
   /** Start the Cognitive Controller */
   async start(): Promise<void> {
     if (this._running) {
-      console.warn(`Cognitive Controller is already running`);
+      logger.warn(`Cognitive Controller is already running`);
       return;
     }
 
     this._running = true;
-    console.debug(`Starting Cognitive Controller`);
+    logger.debug(`Starting Cognitive Controller`);
 
     // Start the module's main loop
     this._moduleLoop();
@@ -77,17 +84,17 @@ export class CognitiveController {
   /** Stop the Cognitive Controller */
   async stop(): Promise<void> {
     if (!this._running) {
-      console.warn(`Cognitive Controller is not running`);
+      logger.warn(`Cognitive Controller is not running`);
       return;
     }
 
     this._running = false;
-    console.debug(`Stopped Cognitive Controller`);
+    logger.debug(`Stopped Cognitive Controller`);
   }
 
   /** Main loop for the Cognitive Controller */
   private async _moduleLoop(): Promise<void> {
-    console.debug(`Cognitive Controller loop started`);
+    logger.debug(`Cognitive Controller loop started`);
 
     while (this._running) {
       try {
@@ -99,12 +106,12 @@ export class CognitiveController {
           setTimeout(resolve, this._updateInterval * 1000)
         );
       } catch (e) {
-        console.error(`Error in Cognitive Controller: ${e}`);
+        logger.error(`Error in Cognitive Controller: ${e}`);
         // Continue running despite errors
       }
     }
 
-    console.debug(`Cognitive Controller loop stopped`);
+    logger.debug(`Cognitive Controller loop stopped`);
   }
 
   /**
@@ -119,7 +126,7 @@ export class CognitiveController {
       // Broadcast the decision to all modules
       await this._broadcastDecision(decision);
     } catch (e) {
-      console.error(`Error in Cognitive Controller update: ${e}`);
+      logger.error(`Error in Cognitive Controller update: ${e}`);
     }
   }
 
@@ -214,11 +221,11 @@ export class CognitiveController {
           timestamp: Date.now() / 1000,
         };
       } else {
-        console.warn("No JSON found in LLM response");
+        logger.warn("No JSON found in LLM response");
         return defaultDecision;
       }
     } catch (e) {
-      console.error(`Error parsing LLM response: ${e}`);
+      logger.error(`Error parsing LLM response: ${e}`);
       return defaultDecision;
     }
   }
@@ -234,7 +241,7 @@ export class CognitiveController {
       try {
         await module.onDecision(decision);
       } catch (e) {
-        console.error(`Error broadcasting decision to module ${name}: ${e}`);
+        logger.error(`Error broadcasting decision to module ${name}: ${e}`);
       }
     }
   }

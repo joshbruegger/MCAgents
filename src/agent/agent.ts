@@ -1,7 +1,6 @@
-import { Bot } from "mineflayer";
-import { initializeBot } from "../minecraft/mc_bot.ts";
 import { AgentState, createAgentState } from "./agent_state.ts";
 import { CognitiveController } from "./cognitive_controller.ts";
+import { Environment } from "./environment.ts";
 import { Module } from "./modules/module.ts";
 import { SkillExecutionModule } from "./modules/skill_execution.ts";
 import { AgentConfig } from "./utils/config.ts";
@@ -14,8 +13,8 @@ import { AgentConfig } from "./utils/config.ts";
 export class Agent {
   protected _config: AgentConfig;
 
-  /** Mineflayer bot instance */
-  protected _bot: Bot | null = null;
+  /** Environment instance */
+  protected _environment: Environment;
 
   /** Shared agent state across modules */
   protected _agentState: AgentState;
@@ -28,10 +27,12 @@ export class Agent {
   /** Whether the agent process is running */
   protected _running: boolean = false;
 
-  constructor(config: AgentConfig) {
+  constructor(config: AgentConfig, environment: Environment) {
     this._config = config;
 
     this._agentState = createAgentState();
+
+    this._environment = environment;
 
     this._cognitiveController = new CognitiveController(
       this._config,
@@ -76,11 +77,6 @@ export class Agent {
 
     this._running = true;
 
-    this._bot = initializeBot(this._config);
-    await this._bot.waitForTicks(10); // Ensure the bot is loaded
-
-    await this._bot.waitForTicks(10);
-
     console.info("Starting cognitive controller");
     this._cognitiveController.start();
 
@@ -110,9 +106,6 @@ export class Agent {
 
     console.info("Stopping cognitive controller");
     this._cognitiveController.stop();
-
-    console.info("Quitting bot");
-    this._bot?.quit();
 
     console.info(`Agent ${this._config.name} stopped`);
   }

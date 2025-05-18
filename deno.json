@@ -3,7 +3,10 @@
     "dev": "deno run --watch mod.ts"
   },
   "imports": {
-    "@langchain/core": "npm:@langchain/core@^0.3.40",
+    "@langchain/community": "npm:@langchain/community@^0.3.36",
+    "@langchain/core": "npm:@langchain/core@^0.3.42",
+    "@langchain/langgraph": "npm:@langchain/langgraph@^0.2.57",
+    "@langchain/openai": "npm:@langchain/openai@^0.4.5",
     "@logtape/logtape": "jsr:@logtape/logtape@^0.9.0",
     "@std/assert": "jsr:@std/assert@1",
     "@std/yaml": "jsr:@std/yaml@^1.0.5",
